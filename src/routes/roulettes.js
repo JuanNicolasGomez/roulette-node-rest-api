@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const roulettes = require('../roulettes_mock.json');
+const colors = ["red","black"];
 
 
 router.get('/', (req,res) => {
@@ -27,6 +28,16 @@ router.patch('/open/:id', (req,res) => {
     }
     else{
         res.status(500).json({error: "Roullette does not exists or it's already opened"});
+    }
+})
+
+router.patch('/close/:id', (req,res) => {
+    const {id} = req.params;
+    if (closeRoulette(id)){
+        res.json({"id": id, "desc":"Roulette with id " + id + " closed succesfully."})
+    }
+    else{
+        res.status(500).json({error: "Roullette does not exists or it's already closed"});
     }
 })
 
@@ -68,6 +79,28 @@ function openRoulette(id){
     return state;
 }
 
+function closeRoulette(id){
+    var state = false;
+    roulettes.forEach(roulette => {
+        if (roulette.id == id && roulette.state == 'open'){
+            roulette.state = 'closed'
+            state =  true;
+        }
+    });
+    return state;
+}
+
+function getRouletteResult(roulette){
+    var number = Math.floor(Math.random() * 37); 
+    var color = colors[Math.floor(Math.random() * colors.length)];
+    roulette["bets"].forEach(bet => {
+        if (roulette.id == id && roulette.state == 'open'){
+            roulette.state = 'closed'
+            state =  true;
+        }
+    });
+}
+
 function isValidRouletteBody(body){
     const {name} = body;
     return name;
@@ -84,7 +117,6 @@ function isValidBetType(type){
 }
 
 function isValidBetValue(type, value){
-    var colors = ["red","black"];
     if (type == "number"){
         return (parseInt(value) >= 0) && (parseInt(value) <= 36);
     }else if (type == "color"){
