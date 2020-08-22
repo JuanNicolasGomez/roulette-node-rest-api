@@ -8,10 +8,32 @@
   
  El servicio queda corriendo en el puerto 3000
  
-### Endpoints
-**GET /api/roulettes/**
+### Roulette attributes
+`id` : Id de la ruleta,
 
-Body:
+`name`: Nombre de la ruleta,
+
+`state`: Estado de la ruleta (`open`, `closed`)
+
+`winning_number`: Numero sacado por la ruleta
+
+`winning_color`: Color sacado por la ruleta
+
+`bets`: Lista de apuestas en esa ruleta
+
+       `type`: Tipo de apuesta (`number`, `color`)
+       
+       `value`: Color o número a apostar (`red`, `black`, `0`, `20`, `36` ....)
+       
+       `amount`: Cantidad de dinero a apostar max. 10000
+       
+       `payout`: Cantidad de dinero ganada al cerrar la ruleta
+       
+
+### Endpoints
+**GET /api/roulettes/** obtiene la lista de ruletas creadas
+
+Response Body:
 
 `[
     {
@@ -47,4 +69,71 @@ Body:
         ]
     }
 ]`
-# Arquitectura
+
+**POST /api/roulettes/** Crea una nueva ruleta dado el nombre
+
+Request Body:
+`{"name":"Ruleta 1"}`
+
+Response Body:
+
+`{
+    "id": 3
+}`
+
+**PATCH /api/roulettes/open/{id}** Abre apuestas para la ruleta del id especificado
+
+Response Body:
+
+`{
+    "id": "3",
+    "desc": "Roulette with id 3 opened succesfully."
+}`
+
+**POST /api/roulettes/bet/{id}**
+
+Request Body:
+
+`{
+    "type": "color",
+    "value": "red",
+    "amount":5000
+}`
+
+Response Body:
+
+{
+    "id": "1",
+    "desc": "Bet created succesfully."
+}
+
+**PATCH /api/roulettes/close/{id}** Cierra apuestas para la ruleta del id especificado y devuelve el resultado de las apuestas
+
+Response Body
+`{
+    "id": 1,
+    "name": "roulette",
+    "state": "closed",
+    "winning_number": 23,
+    "winning_color": "red",
+    "bets": [
+        {
+            "type": "color",
+            "value": "red",
+            "amount": 0,
+            "payout": 0
+        },
+        {
+            "type": "color",
+            "value": "black",
+            "amount": 5000,
+            "payout": 0
+        },
+        {
+            "type": "color",
+            "value": "red",
+            "amount": 5000,
+            "payout": 10000
+        }
+    ]
+}`
