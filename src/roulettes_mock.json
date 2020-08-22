@@ -9,7 +9,6 @@
             "type":"color",
             "value":"red",
             "amount":0,
-            "userId": 0,
             "payout": 0
         }]
     },
@@ -24,7 +23,6 @@
                 "type":"number",
                 "value":"0",
                 "amount":0,
-                "userId": 1,
                 "payout": 0
             }
         ]

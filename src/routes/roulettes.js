@@ -65,8 +65,6 @@ router.post('/bet/:id', (req,res) => {
 function buildRoulette(body){
     const id = roulettes.length + 1;
     const state = 'closed';
-    const winning_number = null;
-    const winning_color = null;
     const bets = [];
     const newRoulette = {...body, id, state, bets}
     return newRoulette;
