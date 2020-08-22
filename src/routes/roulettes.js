@@ -8,8 +8,8 @@ router.get('/', (req,res) => {
 })
 
 router.post('/', (req,res) => {
-    if (isValidBody(req.body)){
-        const newRoulette = buildRouletteBody(req.body);
+    if (isValidRouletteBody(req.body)){
+        const newRoulette = buildRoulette(req.body);
         roulettes.push(newRoulette);
         res.json({
             "id":newRoulette.id
@@ -20,21 +20,36 @@ router.post('/', (req,res) => {
     
 })
 
-router.patch('/:id', (req,res) => {
+router.patch('/open/:id', (req,res) => {
     const {id} = req.params;
     if (openRoulette(id)){
         res.json({"id": id, "desc":"Roulette with id " + id + " opened succesfully."})
     }
     else{
-        res.status(500).json({error: "Roullette could not be opened"});
+        res.status(500).json({error: "Roullette does not exists or it's already opened"});
+    }
+})
+
+router.post('/bet/:id', (req,res) => {
+    const {id} = req.params;
+    if (isValidBetBody(req.body)){
+        const newBet = buildBet(req.body);
+        if (createBet(id, newBet)){
+            res.json({"id": id, "desc":"Bet created succesfully."})
+        }else{
+            res.status(500).json({error: "Roullette does not exists or it's closed"});
+        }
+    }else{
+        res.status(500).json({error: "Wrong request"});
     }
 })
 
 
-function buildRouletteBody(body){
+function buildRoulette(body){
     const id = roulettes.length + 1;
     const state = 'closed';
-    const newRoulette = {...body, id, state}
+    const bets = [];
+    const newRoulette = {...body, id, state, bets}
     return newRoulette;
 }
 
@@ -50,9 +65,32 @@ function openRoulette(id){
     return state;
 }
 
-function isValidBody(body){
+function isValidRouletteBody(body){
     const {name} = body;
     return name;
 }
 
+function isValidBetBody(body){
+    const {type, value, amount} = body;
+    return type && value && amount;
+}
+
+function buildBet(body){
+    const id = roulettes.length + 1;
+    const newRoulette = {...body, id}
+    return newRoulette;
+}
+
+function createBet(id, bet){
+    var state = false;
+    roulettes.forEach(roulette => {
+        if (roulette.id == id && roulette.state == 'open'){
+            roulette["bets"].push(bet);
+            state =  true;
+        }
+        console.log(roulette)
+    });
+    return state;
+    
+}
 module.exports = router;

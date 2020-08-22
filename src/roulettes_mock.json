@@ -4,6 +4,7 @@
         "name": "roulette",
         "state": "closed",
         "bets":[{
+            "id": 1,
             "type":"color",
             "value":"red",
             "amount":0
@@ -15,6 +16,7 @@
         "state": "closed",
         "bets":[
             {
+                "id": 1,
                 "type":"number",
                 "value":"0",
                 "amount":0
