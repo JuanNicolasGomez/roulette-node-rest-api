@@ -72,9 +72,26 @@ function isValidRouletteBody(body){
 
 function isValidBetBody(body){
     const {type, value, amount} = body;
-    return type && value && amount;
+    return isValidBetType(type) && isValidBetValue(type, value) && isValidBetAmount(amount);
 }
 
+function isValidBetType(type){
+    var types = ["number", "color"];
+    return types.includes(type);
+}
+
+function isValidBetValue(type, value){
+    var colors = ["red","black"];
+    if (type == "number"){
+        return (parseInt(value) >= 0) && (parseInt(value) <= 36);
+    }else if (type == "color"){
+        return colors.includes(value);
+    }
+}
+
+function isValidBetAmount(amount){
+    return (amount > 0) && (amount <= 10000);
+}
 function buildBet(body){
     const id = roulettes.length + 1;
     const newRoulette = {...body, id}
