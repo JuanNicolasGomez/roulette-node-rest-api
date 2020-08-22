@@ -92,6 +92,8 @@ Response Body:
 
 **POST /api/roulettes/bet/{id}**
 
+**IMPORTANTE: AGREGAR HEADER:** `User-Id` : `15` (cualquier numero que represente el id de un usaurio autenticado)
+
 Request Body:
 
 `{
