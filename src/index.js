@@ -8,7 +8,8 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
-app.use(require('./routes/index'))
+app.use(require('./routes/index'));
+app.use('/api/roulettes', require('./routes/roulettes'));
 
 app.listen(app.get('port'),() => {
     console.log(`Server on port ${3000}`)
