@@ -2,6 +2,7 @@ const {Router} = require('express');
 const router = Router();
 const roulettes = require('../roulettes_mock.json');
 const colors = ["red","black"];
+const types = ["number", "color"];
 
 
 router.get('/', (req,res) => {
@@ -24,7 +25,7 @@ router.post('/', (req,res) => {
 router.patch('/open/:id', (req,res) => {
     const {id} = req.params;
     if (openRoulette(id)){
-        res.json({"id": id, "desc":"Roulette with id " + id + " opened succesfully."})
+        res.json({"id": id, "desc":"Roulette with id " + id + " opened succesfully."});
     }
     else{
         res.status(500).json({error: "Roullette does not exists or it's already opened"});
@@ -33,8 +34,9 @@ router.patch('/open/:id', (req,res) => {
 
 router.patch('/close/:id', (req,res) => {
     const {id} = req.params;
-    if (closeRoulette(id)){
-        res.json({"id": id, "desc":"Roulette with id " + id + " closed succesfully."})
+    var result = closeRoulette(id);
+    if (result){
+        res.json(result);
     }
     else{
         res.status(500).json({error: "Roullette does not exists or it's already closed"});
@@ -50,7 +52,7 @@ router.post('/bet/:id', (req,res) => {
     if (isValidBetBody(req.body)){
         const newBet = buildBet(req.body);
         if (createBet(id, newBet)){
-            res.json({"id": id, "desc":"Bet created succesfully."})
+            res.json({"id": id, "desc":"Bet created succesfully."});
         }else{
             res.status(500).json({error: "Roullette does not exists or it's closed"});
         }
@@ -63,6 +65,8 @@ router.post('/bet/:id', (req,res) => {
 function buildRoulette(body){
     const id = roulettes.length + 1;
     const state = 'closed';
+    const winning_number = null;
+    const winning_color = null;
     const bets = [];
     const newRoulette = {...body, id, state, bets}
     return newRoulette;
@@ -72,7 +76,7 @@ function openRoulette(id){
     var state = false;
     roulettes.forEach(roulette => {
         if (roulette.id == id && roulette.state == 'closed'){
-            roulette.state = 'open'
+            roulette.state = 'open';
             state =  true;
         }
     });
@@ -80,25 +84,30 @@ function openRoulette(id){
 }
 
 function closeRoulette(id){
-    var state = false;
+    var rouletteResult = null;
     roulettes.forEach(roulette => {
         if (roulette.id == id && roulette.state == 'open'){
-            roulette.state = 'closed'
+            rouletteResult = generateRouletteResult(roulette)
+            roulette.state = 'closed';
             state =  true;
         }
     });
-    return state;
+    return rouletteResult;
 }
 
-function getRouletteResult(roulette){
+function generateRouletteResult(roulette){
     var number = Math.floor(Math.random() * 37); 
     var color = colors[Math.floor(Math.random() * colors.length)];
+    roulette.winning_number = number;
+    roulette.winning_color = color;
     roulette["bets"].forEach(bet => {
-        if (roulette.id == id && roulette.state == 'open'){
-            roulette.state = 'closed'
-            state =  true;
+        if (bet.type == "color" && bet.value == color){
+            bet.payout = bet.amount * 2;
+        }else if(bet.type == "number" && bet.value == number){
+            bet.payout = bet.amount * 36;
         }
     });
+    return roulette;
 }
 
 function isValidRouletteBody(body){
@@ -112,14 +121,13 @@ function isValidBetBody(body){
 }
 
 function isValidBetType(type){
-    var types = ["number", "color"];
     return types.includes(type);
 }
 
 function isValidBetValue(type, value){
-    if (type == "number"){
+    if (type == types[0]){
         return (parseInt(value) >= 0) && (parseInt(value) <= 36);
-    }else if (type == "color"){
+    }else if (type == types[1]){
         return colors.includes(value);
     }
 }
@@ -128,8 +136,9 @@ function isValidBetAmount(amount){
     return (amount > 0) && (amount <= 10000);
 }
 function buildBet(body){
-    const newRoulette = {...body}
-    return newRoulette;
+    const payout = 0;
+    const newBet = {...body, payout}
+    return newBet;
 }
 
 function createBet(id, bet){

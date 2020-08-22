@@ -3,23 +3,29 @@
         "id": 1,
         "name": "roulette",
         "state": "closed",
+        "winning_number":null,
+        "winning_color":null,
         "bets":[{
             "type":"color",
             "value":"red",
             "amount":0,
-            "userId": 0
+            "userId": 0,
+            "payout": 0
         }]
     },
     {
         "id": 2,
         "name": "roulette2",
         "state": "closed",
+        "winning_number":null,
+        "winning_color":null,
         "bets":[
             {
                 "type":"number",
                 "value":"0",
                 "amount":0,
-                "userId": 1
+                "userId": 1,
+                "payout": 0
             }
         ]
     }
