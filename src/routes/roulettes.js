@@ -31,6 +31,10 @@ router.patch('/open/:id', (req,res) => {
 })
 
 router.post('/bet/:id', (req,res) => {
+    console.log(req.headers["user-id"]);
+    if(req.headers["user-id"] == null){
+        res.status(403).send({error: "User not authenticated"});
+    }
     const {id} = req.params;
     if (isValidBetBody(req.body)){
         const newBet = buildBet(req.body);
@@ -60,7 +64,6 @@ function openRoulette(id){
             roulette.state = 'open'
             state =  true;
         }
-        console.log(roulette)
     });
     return state;
 }
@@ -93,8 +96,7 @@ function isValidBetAmount(amount){
     return (amount > 0) && (amount <= 10000);
 }
 function buildBet(body){
-    const id = roulettes.length + 1;
-    const newRoulette = {...body, id}
+    const newRoulette = {...body}
     return newRoulette;
 }
 
@@ -105,7 +107,6 @@ function createBet(id, bet){
             roulette["bets"].push(bet);
             state =  true;
         }
-        console.log(roulette)
     });
     return state;
     
