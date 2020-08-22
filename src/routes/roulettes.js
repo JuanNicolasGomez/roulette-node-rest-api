@@ -44,7 +44,6 @@ router.patch('/close/:id', (req,res) => {
 })
 
 router.post('/bet/:id', (req,res) => {
-    console.log(req.headers["user-id"]);
     if(req.headers["user-id"] == null){
         res.status(403).send({error: "User not authenticated"});
     }
