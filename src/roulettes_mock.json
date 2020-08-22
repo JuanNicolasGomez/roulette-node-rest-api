@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "name": "roulette",
+        "state": "closed",
+        "bets":[{
+            "type":"color",
+            "value":"red",
+            "amount":0
+        }]
+    },
+    {
+        "id": 2,
+        "name": "roulette2",
+        "state": "closed",
+        "bets":[
+            {
+                "type":"number",
+                "value":"0",
+                "amount":0
+            }
+        ]
+    }
+]

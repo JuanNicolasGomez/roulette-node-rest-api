@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const router = Router();
-const roulettes = require('../dataMock.json');
+const roulettes = require('../roulettes_mock.json');
 console.log(roulettes)
 
 router.get('/', (req,res) => {
@@ -11,13 +11,14 @@ router.post('/', (req,res) => {
     const {name} = req.body;
     if (name){
         const id = roulettes.length + 1;
-        const newRoulette = {...req.body, id}
+        const state = 'closed';
+        const newRoulette = {...req.body, id, state}
         roulettes.push(newRoulette);
         res.json({
             "id":id.toString()
         });
     }else{
-        res.send(`Wrong request`);
+        res.status(500).json({error: "Wrong request"});
     }
     
 })
