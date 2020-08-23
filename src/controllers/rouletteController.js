@@ -3,6 +3,10 @@ const router = Router();
 const roulettes = require('../roulettes_mock.json');
 const colors = ["red","black"];
 const types = ["number", "color"];
+const states = {
+    OPEN: 'open',
+    CLOSED: 'closed',
+}
 
 
 router.get('/', (req,res) => {
@@ -63,7 +67,7 @@ router.post('/bet/:id', (req,res) => {
 
 function buildRoulette(body){
     const id = roulettes.length + 1;
-    const state = 'closed';
+    const state = states.CLOSED;
     const bets = [];
     const newRoulette = {...body, id, state, bets}
     return newRoulette;
@@ -72,8 +76,8 @@ function buildRoulette(body){
 function openRoulette(id){
     var state = false;
     roulettes.forEach(roulette => {
-        if (roulette.id == id && roulette.state == 'closed'){
-            roulette.state = 'open';
+        if (roulette.id == id && roulette.state == states.CLOSED){
+            roulette.state = states.OPEN;
             state =  true;
         }
     });
@@ -83,9 +87,9 @@ function openRoulette(id){
 function closeRoulette(id){
     var rouletteResult = null;
     roulettes.forEach(roulette => {
-        if (roulette.id == id && roulette.state == 'open'){
+        if (roulette.id == id && roulette.state == states.OPEN){
             rouletteResult = generateRouletteResult(roulette)
-            roulette.state = 'closed';
+            roulette.state = states.CLOSED;
             state =  true;
         }
     });
@@ -141,7 +145,7 @@ function buildBet(body){
 function createBet(id, bet){
     var state = false;
     roulettes.forEach(roulette => {
-        if (roulette.id == id && roulette.state == 'open'){
+        if (roulette.id == id && roulette.state == states.OPEN){
             roulette["bets"].push(bet);
             state =  true;
         }
